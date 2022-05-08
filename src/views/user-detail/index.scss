@@ -1,0 +1,26 @@
+.user-info {
+  width: 90%;
+  margin: 10px auto;
+  .lift-content {
+    .box-card {
+      margin-bottom: 10px;
+      .el-card__header {
+        padding: 8px 20px;
+        padding-bottom: 0;
+        .card-title {
+          height: 40px;
+          line-height: 40px;
+          font-size: 14px;
+        }
+      }
+      .el-card__body {
+        padding: 0 20px;
+      }
+    }
+    .user-base-info {
+      .el-card__body {
+        padding: 20px;
+      }
+    }
+  }
+}
