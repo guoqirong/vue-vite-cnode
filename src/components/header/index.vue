@@ -24,7 +24,7 @@
         <span>
           <el-link
             :underline="false"
-            href="https://github.com/guoqirong/vue3-cnode"
+            href="https://github.com/guoqirong/vue-vite-cnode"
             target="_blank"
           >GitHub仓库</el-link>
         </span>
