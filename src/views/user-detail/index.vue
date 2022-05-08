@@ -40,7 +40,7 @@
           <list-comp
             :isLoading="isLoading"
             isSimpleItem
-            :listData="userData && userData.recent_topics || []"
+            :listData="((userData && userData.recent_topics || []) as never[])"
             @seeDetail="seeDetail"
           />
         </div>
@@ -53,7 +53,7 @@
           <list-comp
             :isLoading="isLoading"
             isSimpleItem
-            :listData="userData && userData.recent_replies || []"
+            :listData="((userData && userData.recent_replies || []) as never[])"
             :isTopicsRepliesList="false"
             @seeDetail="seeDetail"
           />

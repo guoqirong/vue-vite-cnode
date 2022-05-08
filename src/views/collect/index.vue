@@ -9,7 +9,7 @@
         <div>
           <list-comp
             :isLoading="isLoading"
-            :listData="collect"
+            :listData="(collect as never[])"
             @seeDetail="seeDetail"
           />
         </div>

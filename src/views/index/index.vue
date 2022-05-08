@@ -12,7 +12,7 @@
         <el-tabs
           v-model="activeTypeName"
           class="topic-tabs"
-          @tab-click="handleTabClick">
+          @tab-click="(handleTabClick as any)">
           <el-tab-pane
             v-for="(item, i) in topicTypeList"
             :key="i"
@@ -23,7 +23,7 @@
           <list-comp
             :isLoading="isLoading"
             :limit="limit"
-            :listData="listData"
+            :listData="(listData as never[])"
             @seeDetail="seeDetail"
           />
           <!-- 分页 -->

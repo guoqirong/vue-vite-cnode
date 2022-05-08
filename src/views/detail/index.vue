@@ -76,7 +76,7 @@
           <div class="replie-content" v-html="item?.content"></div>
           <el-form
             v-if="item.isReplie"
-            :ref="(el) => item.formRef = el"
+            :ref="(el: any) => item.formRef = el"
             class="replies-form replie-edit-wrapper"
             :model="item"
             :rules="rules"
@@ -90,7 +90,7 @@
               ></editor>
             </el-form-item>
             <el-form-item class="is-last">
-              <el-button type="primary" @click="replieTopic(item.formRef, item.id, item.replieContent)">回复</el-button>
+              <el-button type="primary" @click="replieTopic(item.formRef as any, item.id, item.replieContent)">回复</el-button>
               <el-button @click="changeRepliceItemState(i)">取消</el-button>
             </el-form-item>
           </el-form>
@@ -201,7 +201,7 @@ export default defineComponent({
     const init = {
       height: 200, //富文本高度
       width: '100%', //富文本宽度
-      language_url: (state.grobal.entryUrl ?? '.') + '/tinymce-langs/zh_CN.js', //中文包
+      language_url: import.meta.env.BASE_URL + './tinymce-langs/zh_CN.js', //中文包
       language: 'zh_CN', //中文
       browser_spellcheck: true, // 拼写检查
       branding: false, // 去水印
@@ -333,7 +333,7 @@ export default defineComponent({
     
     // 为评论点赞和取消点赞
     const { httpRequest: likeHttpRequest } = useHttpRequest();
-    const likeAndUnlike = (id: number) => {
+    const likeAndUnlike = (id: string) => {
       likeHttpRequest({
         url: adornUrl(`/api/v1/reply/${id}/ups`),
         method: 'post',
@@ -376,7 +376,7 @@ export default defineComponent({
     });
     // 回复话题
     const { httpRequest: replieHttpRequest } = useHttpRequest();
-    const replieTopic = async (formEl: InstanceType<typeof ElForm> | undefined, replyId?: number, content?: string) => {
+    const replieTopic = async (formEl: InstanceType<typeof ElForm> | undefined, replyId?: string, content?: string) => {
       if (!formEl) return;
       await formEl.validate((valid, fields) => {
         if (valid) {
@@ -386,7 +386,7 @@ export default defineComponent({
         }
       });
     };
-    const replieTopicRequest = (replyId?: number, content?: string) => {
+    const replieTopicRequest = (replyId?: string, content?: string) => {
       replieHttpRequest({
         url: adornUrl(`/api/v1/topic/${topic.value?.id}/replies`),
         method: 'post',

@@ -58,7 +58,7 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   // 处理生产环境github上用的不是根目录的路由问题，history模式需要改项目nginx配置 || window.__POWERED_BY_QIANKUN__
   // history: createWebHistory(import.meta.env.VITE_NODE_ENV === 'production' || window.__POWERED_BY_QIANKUN__ ? '/vue3-cnode' : import.meta.env.BASE_URL),
-  history: createWebHashHistory(import.meta.env.VITE_NODE_ENV === 'production' ? '/vue3-cnode' : import.meta.env.BASE_URL),
+  history: createWebHashHistory(import.meta.env.VITE_NODE_ENV === 'production' ? '/vue-vite-cnode' : import.meta.env.BASE_URL),
   routes,
 });
 
