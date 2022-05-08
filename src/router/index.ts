@@ -1,11 +1,12 @@
 import store from '@/store';
 import { userStateType } from '@/store/modules/user';
+import { qiankunWindow } from 'vite-plugin-qiankun/dist/helper';
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
 
 export let prefix = '';
-// if (window.__POWERED_BY_QIANKUN__) {
-//   prefix = '/vue3-cnode' // /vue3-cnode为主应用的activeRule
-// }
+if (qiankunWindow.__POWERED_BY_QIANKUN__) {
+  prefix = '/vue-vite-cnode' // /vue3-cnode为主应用的activeRule
+}
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -56,9 +57,9 @@ const routes: Array<RouteRecordRaw> = [
 ];
 
 const router = createRouter({
-  // 处理生产环境github上用的不是根目录的路由问题，history模式需要改项目nginx配置 || window.__POWERED_BY_QIANKUN__
+  // 处理生产环境github上用的不是根目录的路由问题，history模式需要改项目nginx配置
   // history: createWebHistory(import.meta.env.VITE_NODE_ENV === 'production' || window.__POWERED_BY_QIANKUN__ ? '/vue3-cnode' : import.meta.env.BASE_URL),
-  history: createWebHashHistory(import.meta.env.VITE_NODE_ENV === 'production' ? '/vue-vite-cnode' : import.meta.env.BASE_URL),
+  history: createWebHashHistory(import.meta.env.VITE_NODE_ENV === 'production' || qiankunWindow.__POWERED_BY_QIANKUN__ ? '/vue-vite-cnode' : import.meta.env.BASE_URL),
   routes,
 });
 
