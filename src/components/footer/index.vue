@@ -1,3 +1,9 @@
+<script setup lang="ts">
+defineExpose({
+  name: 'FooterComp',
+});
+</script>
+
 <template>
   <div class="body-footer">
     <div class="footer-content">
@@ -6,12 +12,5 @@
     </div>
   </div>
 </template>
-<script lang="ts">
-import { defineComponent } from 'vue';
-
-export default defineComponent({
-  name: 'FooterComp',
-})
-</script>
 
 <style lang="scss" src="./index.scss"></style>

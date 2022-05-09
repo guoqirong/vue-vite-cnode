@@ -1,3 +1,112 @@
+<script setup lang="ts">
+import { computed, ref } from 'vue';
+import ClientQrCodeComp from '@/components/client-qr-code/index.vue';
+import UserInfoComp from '@/components/user-info/index.vue';
+import useHttpRequest from '@/utils/request';
+import { useStore } from 'vuex';
+import { ElMessage } from 'element-plus';
+import { authorType } from '../detail/index.vue';
+import { changeLtGt, formatDate } from '@/utils';
+import useEventBus from '@/utils/eventBus';
+
+interface replyType {
+  content: string;
+  create_at: string;
+  id: string;
+  ups: string[];
+};
+
+interface topicType {
+  id: string;
+  last_reply_at: string;
+  title: string;
+};
+
+interface messagesItemType {
+  author: authorType;
+  create_at: string;
+  has_read: boolean;
+  id: string;
+  reply: replyType;
+  topic: topicType;
+  type: string;
+};
+
+interface messagesType {
+  has_read_messages: messagesItemType[];
+  hasnot_read_messages: messagesItemType[];
+};
+
+const { state } = useStore();
+
+// 登录标识
+const token = computed(() => {
+  return state.user.token;
+});
+
+// 列表数据获取
+const { isLoading, adornUrl, httpRequest } = useHttpRequest();
+const message = ref<messagesType>();
+const getData = () => {
+  if (token.value) {
+    httpRequest ({
+      url: adornUrl(`/api/v1/messages`),
+      method: 'get',
+      params: {
+        accesstoken: token.value,
+        mdrender: true
+      }
+    }).then(({data}) => {
+      data.data.has_read_messages.forEach((item: messagesItemType) => {
+        item.reply.content = changeLtGt(item.reply.content);
+      });
+      data.data.hasnot_read_messages.forEach((item: messagesItemType) => {
+        item.reply.content = changeLtGt(item.reply.content);
+      });
+      message.value = data.data;
+    }).catch(e => {
+      ElMessage.error('请求失败');
+      console.error(e);
+    })
+  }
+};
+getData();
+
+// 标记消息已读
+const [ emitter ] = useEventBus();
+const { httpRequest: readHttpRequest } = useHttpRequest();
+const readAll = () => {
+  readHttpRequest({
+    url: adornUrl(`/api/v1/message/mark_all`),
+    method: 'post',
+    params: {
+      accesstoken: token.value
+    }
+  }).then(() => {
+    emitter.emit('read-msg');
+    getData();
+  }).catch(e => {
+    ElMessage.error('请求失败');
+    console.error(e);
+  })
+};
+const readOne = (id: string) => {
+  readHttpRequest({
+    url: adornUrl(`/api/v1/message/mark_one/${id}`),
+    method: 'post',
+    params: {
+      accesstoken: token.value
+    }
+  }).then(() => {
+    emitter.emit('read-msg');
+    getData();
+  }).catch(e => {
+    ElMessage.error('请求失败');
+    console.error(e);
+  })
+};
+</script>
+
 <template>
   <div class="my-message">
     <page-wrapper>
@@ -79,136 +188,4 @@
   </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, ref } from 'vue';
-import ClientQrCodeComp from '@/components/client-qr-code/index.vue';
-import UserInfoComp from '@/components/user-info/index.vue';
-import useHttpRequest from '@/utils/request';
-import { useStore } from 'vuex';
-import { ElEmpty, ElMessage, ElSkeleton } from 'element-plus';
-import { authorType } from '../detail/index.vue';
-import { changeLtGt, formatDate } from '@/utils';
-import useEventBus from '@/utils/eventBus';
-
-interface replyType {
-  content: string;
-  create_at: string;
-  id: string;
-  ups: string[];
-}
-
-interface topicType {
-  id: string;
-  last_reply_at: string;
-  title: string;
-}
-
-interface messagesItemType {
-  author: authorType;
-  create_at: string;
-  has_read: boolean;
-  id: string;
-  reply: replyType;
-  topic: topicType;
-  type: string;
-}
-
-interface messagesType {
-  has_read_messages: messagesItemType[];
-  hasnot_read_messages: messagesItemType[];
-}
-
-
-export default defineComponent({
-  components: {
-    ElSkeleton,
-    ElEmpty,
-    ClientQrCodeComp,
-    UserInfoComp
-  },
-  setup() {
-    const { state } = useStore();
-
-    // 登录标识
-    const token = computed(() => {
-      return state.user.token;
-    });
-
-    // 列表数据获取
-    const { isLoading, adornUrl, httpRequest } = useHttpRequest();
-    const message = ref<messagesType>();
-    const getData = () => {
-      if (token.value) {
-        httpRequest ({
-          url: adornUrl(`/api/v1/messages`),
-          method: 'get',
-          params: {
-            accesstoken: token.value,
-            mdrender: true
-          }
-        }).then(({data}) => {
-          data.data.has_read_messages.forEach((item: messagesItemType) => {
-            item.reply.content = changeLtGt(item.reply.content);
-          });
-          data.data.hasnot_read_messages.forEach((item: messagesItemType) => {
-            item.reply.content = changeLtGt(item.reply.content);
-          });
-          message.value = data.data;
-        }).catch(e => {
-          ElMessage.error('请求失败');
-          console.error(e);
-        })
-      }
-    };
-    getData();
-
-    // 标记消息已读
-    const [ emitter ] = useEventBus();
-    const { httpRequest: readHttpRequest } = useHttpRequest();
-    const readAll = () => {
-      readHttpRequest({
-        url: adornUrl(`/api/v1/message/mark_all`),
-        method: 'post',
-        params: {
-          accesstoken: token.value
-        }
-      }).then(() => {
-        emitter.emit('read-msg');
-        getData();
-      }).catch(e => {
-        ElMessage.error('请求失败');
-        console.error(e);
-      })
-    };
-    const readOne = (id: string) => {
-      readHttpRequest({
-        url: adornUrl(`/api/v1/message/mark_one/${id}`),
-        method: 'post',
-        params: {
-          accesstoken: token.value
-        }
-      }).then(() => {
-        emitter.emit('read-msg');
-        getData();
-      }).catch(e => {
-        ElMessage.error('请求失败');
-        console.error(e);
-      })
-    };
-
-    return {
-      message,
-      isLoading,
-      readAll,
-      readOne,
-      formatDate,
-    }
-  },
-})
-</script>
-
-
-function item(item: any, arg1: (messagesItemType: any) => void) {
-  throw new Error('Function not implemented.');
-}
 <style lang="scss" src="./index.scss"></style>
