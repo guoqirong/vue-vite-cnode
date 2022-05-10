@@ -1,3 +1,9 @@
+<script setup lang="ts">
+defineExpose({
+  name: 'ClientQrCodeComp',
+});
+</script>
+
 <template>
   <el-card class="box-card">
     <template #header>
@@ -17,15 +23,5 @@
     </div>
   </el-card>
 </template>
-
-<script lang="ts">
-import { ElCard, ElImage, ElLink } from 'element-plus';
-import { defineComponent } from 'vue';
-
-export default defineComponent({
-  name: 'ClientQrCodeComp',
-  components: { ElCard, ElImage, ElLink }
-})
-</script>
 
 <style lang="scss" src="./index.scss"></style>

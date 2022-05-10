@@ -1,3 +1,65 @@
+
+<script setup lang="ts">
+import { routerPush } from '@/utils';
+import { computed } from 'vue'
+import { useRoute } from 'vue-router';
+import { useStore } from 'vuex';
+
+defineExpose({
+  name: 'UserInfoComp',
+});
+
+const props = defineProps({
+  title: {
+    type: String,
+    default: '个人信息'
+  },
+  authorData: {
+    type: Object,
+    default: undefined,
+  },
+  authorLoading: Boolean,
+  isTopicsRepliesList: {
+    type: Boolean,
+    default: true,
+  },
+});
+
+const { state } = useStore();
+const route = useRoute();
+
+// 登录标识
+const token = computed(() => {
+  return state.user.token;
+});
+
+// 用户数据加载中
+const loading = computed(() => {
+  return props.authorLoading ?? state.user.isLoading;
+});
+
+// 个人信息
+const userData = computed(() => {
+  return props.authorData ?? state.user.userData;
+});
+
+// 前往登录页
+const gotoLogin = () => {
+  if (route.path !== '/login') {
+    routerPush({
+      path: '/login'
+    })
+  }
+};
+
+// 前往用户详情页
+const gotoUserDetail = () => {
+  routerPush({
+    path: `/user/${userData.value.loginname}`
+  });
+};
+</script>
+
 <template>
   <el-card
     class="box-card"
@@ -82,76 +144,5 @@
     </div>
   </el-card>
 </template>
-
-<script lang="ts">
-import { routerPush } from '@/utils';
-import { ElSkeleton, ElSkeletonItem } from 'element-plus';
-import { computed, defineComponent } from 'vue'
-import { useRoute } from 'vue-router';
-import { useStore } from 'vuex';
-
-export default defineComponent({
-  name: 'UserInfoComp',
-  components: { ElSkeleton, ElSkeletonItem },
-  props: {
-    title: {
-      type: String,
-      default: '个人信息'
-    },
-    authorData: {
-      type: Object,
-      default: undefined,
-    },
-    authorLoading: Boolean,
-    isTopicsRepliesList: {
-      type: Boolean,
-      default: true,
-    },
-  },
-  setup(props) {
-    const { state } = useStore();
-    const route = useRoute();
-
-    // 登录标识
-    const token = computed(() => {
-      return state.user.token;
-    });
-    
-    // 用户数据加载中
-    const loading = computed(() => {
-      return props.authorLoading ?? state.user.isLoading;
-    });
-
-    // 个人信息
-    const userData = computed(() => {
-      return props.authorData ?? state.user.userData;
-    });
-    
-    // 前往登录页
-    const gotoLogin = () => {
-      if (route.path !== '/login') {
-        routerPush({
-          path: '/login'
-        })
-      }
-    };
-    
-    // 前往用户详情页
-    const gotoUserDetail = () => {
-      routerPush({
-        path: `/user/${userData.value.loginname}`
-      });
-    };
-
-    return {
-      token,
-      loading,
-      userData,
-      gotoLogin,
-      gotoUserDetail,
-    }
-  },
-})
-</script>
 
 <style lang="scss" src="./index.scss"></style>
