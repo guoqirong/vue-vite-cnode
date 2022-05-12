@@ -1,3 +1,44 @@
+
+<script setup lang="ts">
+import { ref } from 'vue';
+import ListComp from '@/components/list/index.vue';
+import ClientQrCodeComp from '@/components/client-qr-code/index.vue';
+import UserInfoComp from '@/components/user-info/index.vue';
+import useHttpRequest from '@/utils/request';
+import { ElMessage } from 'element-plus';
+import { useRoute } from 'vue-router';
+import { userDataType } from '@/store/modules/user';
+import { routerPush } from '@/utils';
+
+const route = useRoute();
+// 列表数据获取
+const { isLoading, adornUrl, httpRequest } = useHttpRequest();
+const userData = ref<userDataType>();
+const getUserData = () => {
+  httpRequest ({
+    url: adornUrl(`/api/v1/user/${route.params.userName}`),
+    method: 'get'
+  }).then(({data}) => {
+    userData.value = data.data;
+  }).catch(e => {
+    ElMessage.error('请求失败');
+    console.error(e)
+  })
+};
+getUserData();
+
+// 查看详情
+const seeDetail = (id: string) => {
+  routerPush({
+    path: `/detail`,
+    query: {
+      id: id,
+      userName: route.params.userName
+    }
+  });
+};
+</script>
+
 <template>
   <div class="user-info">
     <page-wrapper>
@@ -71,60 +112,5 @@
     </page-wrapper>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent, ref } from 'vue';
-import ListComp from '@/components/list/index.vue';
-import ClientQrCodeComp from '@/components/client-qr-code/index.vue';
-import UserInfoComp from '@/components/user-info/index.vue';
-import useHttpRequest from '@/utils/request';
-import { ElMessage } from 'element-plus';
-import { useRoute } from 'vue-router';
-import { userDataType } from '@/store/modules/user';
-import { routerPush } from '@/utils';
-
-export default defineComponent({
-  components: {
-    ListComp,
-    ClientQrCodeComp,
-    UserInfoComp
-  },
-  setup() {
-    const route = useRoute();
-    // 列表数据获取
-    const { isLoading, adornUrl, httpRequest } = useHttpRequest();
-    const userData = ref<userDataType>();
-    const getUserData = () => {
-      httpRequest ({
-        url: adornUrl(`/api/v1/user/${route.params.userName}`),
-        method: 'get'
-      }).then(({data}) => {
-        userData.value = data.data;
-      }).catch(e => {
-        ElMessage.error('请求失败');
-        console.error(e)
-      })
-    };
-    getUserData();
-
-    // 查看详情
-    const seeDetail = (id: string) => {
-      routerPush({
-        path: `/detail`,
-        query: {
-          id: id,
-          userName: route.params.userName
-        }
-      });
-    };
-
-    return {
-      isLoading,
-      userData,
-      seeDetail,
-    }
-  },
-})
-</script>
 
 <style lang="scss" src="./index.scss"></style>

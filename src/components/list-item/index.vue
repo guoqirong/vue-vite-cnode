@@ -1,3 +1,39 @@
+<script setup lang="ts">
+import { formatDate, getTopicTab } from '@/utils'
+import { PropType } from 'vue'
+export interface topicListItemType {
+  id: string;
+  author_id:string;
+  tab: string
+  content: string;
+  title: string;
+  last_reply_at: string;
+  good: boolean;
+  top: boolean;
+  reply_count: number;
+  visit_count: number;
+  create_at: string;
+  author: {
+    loginname: string;
+    avatar_url: string;
+  }
+}
+
+defineExpose({
+  name: 'ListItem',
+});
+
+const { itemData, isSimpleItem } = defineProps({
+  // 列表项数据
+  itemData: Object as PropType<topicListItemType>,
+  // 是否简单列表
+  isSimpleItem: {
+    type: Boolean,
+    default: false,
+  }
+});
+</script>
+
 <template>
   <div
     class="item-body"
@@ -25,7 +61,7 @@
         width: !itemData?.top && itemData?.tab === 'dev' ? '' : '42px'
       }">
       <el-tag effect="dark" :type="itemData?.top ? 'danger' : 'success'">
-        {{getTopicTab(itemData?.top, itemData?.tab)}}
+        {{getTopicTab(itemData?.top ?? false, itemData?.tab ?? '')}}
       </el-tag>
     </div>
     <div
@@ -36,49 +72,8 @@
       }"
       v-html="itemData?.title"
     ></div>
-    <div v-if="!isSimpleItem" class="created-time">{{formatDate(itemData?.create_at, 'yyyy-MM-dd')}}</div>
+    <div v-if="!isSimpleItem" class="created-time">{{formatDate(itemData?.create_at ?? '', 'yyyy-MM-dd')}}</div>
   </div>
 </template>
-
-<script lang="ts">
-import { formatDate, getTopicTab } from '@/utils'
-import { defineComponent, PropType } from 'vue'
-export interface topicListItemType {
-  id: string;
-  author_id:string;
-  tab: string
-  content: string;
-  title: string;
-  last_reply_at: string;
-  good: boolean;
-  top: boolean;
-  reply_count: number;
-  visit_count: number;
-  create_at: string;
-  author: {
-    loginname: string;
-    avatar_url: string;
-  }
-}
-
-export default defineComponent({
-  props: {
-    // 列表项数据
-    itemData: Object as PropType<topicListItemType>,
-    // 是否简单列表
-    isSimpleItem: {
-      type: Boolean,
-      default: false,
-    }
-  },
-  setup(props) {
-    return {
-      ...props,
-      formatDate,
-      getTopicTab
-    }
-  },
-})
-</script>
 
 <style lang="scss" src="./index.scss"></style>
