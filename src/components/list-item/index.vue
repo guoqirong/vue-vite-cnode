@@ -61,7 +61,7 @@ const { itemData, isSimpleItem } = defineProps({
         width: !itemData?.top && itemData?.tab === 'dev' ? '' : '42px'
       }">
       <el-tag effect="dark" :type="itemData?.top ? 'danger' : 'success'">
-        {{getTopicTab(itemData?.top, itemData?.tab)}}
+        {{getTopicTab(itemData?.top ?? false, itemData?.tab ?? '')}}
       </el-tag>
     </div>
     <div
@@ -72,7 +72,7 @@ const { itemData, isSimpleItem } = defineProps({
       }"
       v-html="itemData?.title"
     ></div>
-    <div v-if="!isSimpleItem" class="created-time">{{formatDate(itemData?.create_at, 'yyyy-MM-dd')}}</div>
+    <div v-if="!isSimpleItem" class="created-time">{{formatDate(itemData?.create_at ?? '', 'yyyy-MM-dd')}}</div>
   </div>
 </template>
 

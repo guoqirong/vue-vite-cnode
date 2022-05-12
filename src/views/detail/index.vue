@@ -307,7 +307,7 @@ const changeRepliceItemState = (i: number) => {
                     width: !topic?.top && topic?.tab === 'dev' ? '' : '50px'
                   }">
                     <el-tag effect="dark" :type="topic?.top ? 'danger' : 'success'">
-                      {{getTopicTab(topic?.top, topic?.tab)}}
+                      {{getTopicTab(topic?.top ?? false, topic?.tab ?? '')}}
                     </el-tag>
                   </div>
                   <div
