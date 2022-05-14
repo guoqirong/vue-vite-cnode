@@ -28,8 +28,11 @@ async function render(props?: { [key: string]: any; } | undefined) {
 }
 
 renderWithQiankun({
-  bootstrap() {
+  async bootstrap() {
     console.log('bootstrap');
+    return await new Promise<void>((resolve) => {
+      resolve();
+    });
   },
   mount(props) {
     console.log('mount', props);
@@ -53,4 +56,28 @@ renderWithQiankun({
 
 if (!qiankunWindow.__POWERED_BY_QIANKUN__) {
   render({});
+}
+
+//--------- 生命周期函数------------//
+export async function bootstrap(): Promise<boolean> {
+  console.log('[vue] vue app bootstraped')
+  return await new Promise(resolve => {
+    resolve(true);
+  });
+}
+
+export function mount(props: {[key: string]: unknown} | undefined): void {
+  console.log('[vue] props from main framework', props);
+  render(props);
+}
+
+export function unmount(): void {
+  if (instance) {
+    console.log('[vue] vue app unmount')
+    // 清除父应用请求子应用路径
+    store.commit('grobal/updateEntryUrl', '');
+    instance.unmount();
+    instance._instance = null;
+    instance = undefined;
+  }
 }

@@ -54,7 +54,7 @@ const { state } = useStore();
 const init = {
   height: 200, //富文本高度
   width: '100%', //富文本宽度
-  language_url: import.meta.env.BASE_URL + './tinymce-langs/zh_CN.js', //中文包
+  language_url: (state.grobal.entryUrl ?? '.') + '/tinymce-langs/zh_CN.js', //中文包
   language: 'zh_CN', //中文
   browser_spellcheck: true, // 拼写检查
   branding: false, // 去水印
